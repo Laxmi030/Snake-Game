@@ -6,9 +6,9 @@ import java.util.Random;
 
 public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
-    private static final int WIDTH = 1000;
-    private static final int HEIGHT = 1000;
-    private static final int BOX_SIZE = 20;
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 800;
+    private static final int BOX_SIZE = 15;
     private static final int INIT_LENGTH = 3;
     private static final int GAME_SPEED = 100;
 
@@ -161,10 +161,29 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         }
     }
 
+    // Updated food generation logic to avoid food appearing on snake's body
     private void generateFood() {
         Random rand = new Random();
-        int x = (rand.nextInt(WIDTH / BOX_SIZE)) * BOX_SIZE;
-        int y = (rand.nextInt(HEIGHT / BOX_SIZE)) * BOX_SIZE;
+        boolean validPosition = false;
+        int x = 0, y = 0;
+
+        // Keep generating a new food position until it's not on the snake's body
+        while (!validPosition) {
+            x = (rand.nextInt(WIDTH / BOX_SIZE)) * BOX_SIZE;
+            y = (rand.nextInt(HEIGHT / BOX_SIZE)) * BOX_SIZE;
+
+            validPosition = true;
+
+            // Check if the food position is already occupied by the snake
+            for (Point p : snake) {
+                if (p.x == x && p.y == y) {
+                    validPosition = false;  // The position is occupied, try again
+                    break;
+                }
+            }
+        }
+
+        // Once a valid position is found, set the food position
         food = new Point(x, y);
     }
 
@@ -177,3 +196,4 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         frame.setVisible(true);
     }
 }
+
